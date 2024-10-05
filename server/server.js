@@ -1,15 +1,16 @@
+require('dotenv').config();
 const express = require("express");
 const { ApolloServer } = require("apollo-server-express");
 const path = require("path");
 
 const { typeDefs, resolvers } = require("./schemas");
 const { authMiddleware } = require("./utils/auth");
-const db = require("./config/connection");
+const db = require("./config/connection");  // Simplify the import
 
 const PORT = process.env.PORT || 3001;
 const app = express();
 
-startServer = async () => {
+const startServer = async () => {
 	const server = new ApolloServer({
 		typeDefs,
 		resolvers,
@@ -34,8 +35,10 @@ app.get("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "../client/build/index.html"));
 });
 
+// Listen for the DB connection, then start the app
 db.once("open", () => {
 	app.listen(PORT, () => {
 		console.log(`API server running on port ${PORT}!`);
 	});
 });
+

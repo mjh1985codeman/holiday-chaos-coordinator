@@ -1,13 +1,18 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-mongoose.connect(
-  process.env.MONGODB_URI || "mongodb://localhost/holiday-chaos-coordinator",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-  }
-);
+const connectionString = process.env.MONGODB_URI;
 
-module.exports = mongoose.connection;
+mongoose.connect(connectionString, {
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+});
+
+const db = mongoose.connection;
+
+// Handle connection events
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', () => {
+	console.log('MongoDB connected successfully!');
+});
+
+module.exports = db;  // Export the connection object

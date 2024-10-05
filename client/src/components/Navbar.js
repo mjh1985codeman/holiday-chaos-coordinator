@@ -11,12 +11,12 @@ import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Paper from "@mui/material/Paper";
 import ReorderIcon from "@mui/icons-material/Reorder";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 // import Auth from "../utils/auth";
 
 const NavBar = () => {
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	return (
 		<>
@@ -24,14 +24,14 @@ const NavBar = () => {
 				{/* Search */}
 				<BottomNavigation showLabels>
 					<BottomNavigationAction
-						onClick={() => history.push("/")}
+						onClick={() => navigate("/")}
 						label="Search"
 						icon={<SearchIcon />}
 					/>
 					{/* Lists */}
 					{Auth.loggedIn() ? (
 						<BottomNavigationAction
-							onClick={() => history.push("/lists")}
+							onClick={() => navigate("/lists")}
 							label="Your Lists"
 							icon={<ReorderIcon />}
 						/>
@@ -39,7 +39,7 @@ const NavBar = () => {
 					{/* Cart */}
 					{Auth.loggedIn() ? (
 						<BottomNavigationAction
-							onClick={() => history.push("/cart")}
+							onClick={() => navigate("/cart")}
 							label="Cart"
 							icon={<ShoppingCartIcon />}
 						/>
@@ -47,7 +47,7 @@ const NavBar = () => {
 					{/* Sign Up */}
 					{Auth.loggedIn() ? null : (
 						<BottomNavigationAction
-							onClick={() => history.push("/signup")}
+							onClick={() => navigate("/signup")}
 							label="Sign Up"
 							icon={<AssignmentIcon />}
 						/>
@@ -63,7 +63,7 @@ const NavBar = () => {
 					) : (
 						// Log In
 						<BottomNavigationAction
-							onClick={() => history.push("/login")}
+							onClick={() => navigate("/login")}
 							label="Login"
 							icon={<LoginIcon />}
 						/>
