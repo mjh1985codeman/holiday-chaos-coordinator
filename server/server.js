@@ -5,40 +5,46 @@ const path = require("path");
 
 const { typeDefs, resolvers } = require("./schemas");
 const { authMiddleware } = require("./utils/auth");
-const db = require("./config/connection");  // Simplify the import
+const db = require("./config/connection");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
 
-const startServer = async () => {
-	const server = new ApolloServer({
-		typeDefs,
-		resolvers,
-		context: authMiddleware,
-	});
-	await server.start();
-	server.applyMiddleware({ app });
-	console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
-};
-
-startServer();
-
+// Middleware for parsing request bodies
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// Serve up static assets
+const startServer = async () => {
+    const server = new ApolloServer({
+        typeDefs,
+        resolvers,
+        context: authMiddleware,
+    });
+
+    // Start the Apollo Server
+    await server.start();
+
+    // Apply Apollo GraphQL middleware to the Express app
+    server.applyMiddleware({ app });
+
+    // Listen for the DB connection
+    db.once("open", () => {
+        app.listen(PORT, () => {
+            console.log(`API server running on port ${PORT}!`);
+            console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
+        });
+    });
+};
+
+// Serve up static assets for production
 if (process.env.NODE_ENV === "production") {
-	app.use(express.static(path.join(__dirname, "../client/build")));
+    app.use(express.static(path.join(__dirname, "../client/build")));
+
+    // Catch-all route to serve index.html for React Router
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(__dirname, "../client/build/index.html"));
+    });
 }
 
-app.get("*", (req, res) => {
-	res.sendFile(path.join(__dirname, "../client/build/index.html"));
-});
-
-// Listen for the DB connection, then start the app
-db.once("open", () => {
-	app.listen(PORT, () => {
-		console.log(`API server running on port ${PORT}!`);
-	});
-});
-
+// Start the server
+startServer();

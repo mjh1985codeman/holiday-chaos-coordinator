@@ -1,6 +1,7 @@
 const { User } = require("../models");
 const { AuthenticationError } = require("apollo-server-express");
 const { signToken } = require("../utils/auth");
+const { getProducts } = require("../utils/ebayapi");
 
 const resolvers = {
 	Query: {
@@ -17,6 +18,12 @@ const resolvers = {
 
 			throw new AuthenticationError("You are not logged in");
 		},
+
+		getEbayProducts: async (parent, args) => {
+				console.log("here are the args: " , args);
+				const stuff = await getProducts(args);
+				return stuff;
+		} 
 	},
 
 	Mutation: {

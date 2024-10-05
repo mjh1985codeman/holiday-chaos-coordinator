@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import ProductCard from "./ProductCard";
 import Auth from "../utils/auth";
 
-import { productSearch } from "../utils/api";
 
 // Material UI
 import Grid from "@mui/material/Grid";
@@ -30,7 +29,7 @@ const SearchResults = () => {
     setSearchError(false);
 
     try {
-      const response = await productSearch(searchInput);
+      //const response = await productSearch(searchInput);
 
       if (response.length < 0) {
         throw new Error("We missed the mark!");

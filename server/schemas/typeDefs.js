@@ -43,7 +43,9 @@ const typeDefs = gql`
 
 	type Query {
 		me: User
+		getEbayProducts(product: String): String
 	}
+
 
 	type Auth {
 		token: ID!
