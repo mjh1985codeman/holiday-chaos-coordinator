@@ -32,3 +32,20 @@ export const GET_ME = gql`
 		}
 	}
 `;
+
+export const GET_EBAY_PRODUCTS = gql`
+query GetEbayProducts($product: String) {
+getEbayProducts(product: $product) {
+    itemId
+    itemName
+    itemCondition
+    price
+    mainImage
+    additionalImages
+    buyUrl
+    sellerFeedBackPercentage
+    sellerUserName
+    cartValue
+}
+}
+`;

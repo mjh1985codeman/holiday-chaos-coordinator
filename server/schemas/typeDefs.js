@@ -18,10 +18,12 @@ const typeDefs = gql`
 		itemId: ID!
 		itemName: String!
 		price: String!
-		imgUrl: String
+		mainImage: String
+		additionalImages: [String]
 		buyUrl: String
-		description: [String]
-		listTag: [String]
+		sellerUserName: String
+		sellerFeedBackPercentage: String
+		itemCondition: String
 		cartValue: Boolean
 	}
 
@@ -43,7 +45,7 @@ const typeDefs = gql`
 
 	type Query {
 		me: User
-		getEbayProducts(product: String): String
+		getEbayProducts(product: String): [Product]
 	}
 
 

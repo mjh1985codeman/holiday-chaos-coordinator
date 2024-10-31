@@ -20,9 +20,27 @@ const resolvers = {
 		},
 
 		getEbayProducts: async (parent, args) => {
-				console.log("here are the args: " , args);
-				const stuff = await getProducts(args);
-				return stuff;
+				const eBayData = await getProducts(args);
+				const {itemSummaries} = eBayData;
+				const products = [];
+				itemSummaries.forEach(item => {
+					const productDetails = {
+						itemId: item.itemId,
+						itemName: item.title,
+						price: item.price.value,
+						mainImage: item.image.imageUrl,
+						additionalImages: item.additionalImages ? item.additionalImages.map((image) => image.imageUrl) : [],
+						buyUrl: item.itemWebUrl,
+						sellerUserName: item.seller.username,
+						sellerFeedBackPercentage: item.seller.feedbackPercentage,
+						itemCondition: item.condition,
+						cartValue: false
+					};
+					if(productDetails) {
+						products.push(productDetails);
+					}
+				})
+				return products;
 		} 
 	},
 

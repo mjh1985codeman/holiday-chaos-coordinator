@@ -29,10 +29,6 @@ The holidays are fast approaching and you could use a hand in keeping your shopp
 
   </div>
 
-## Links:
-
-- [Deployment](https://holiday-chaos-coordinator.herokuapp.com/)
-- [GitHub](https://github.com/katharinechumble/musical-telegram)
 
 ## Contribution
 
@@ -43,7 +39,7 @@ Michael Hodges
 
 - [GitHub Profile](https://github.com/mjh1985codeman)
 - [LinkedIn](https://www.linkedin.com/in/michael-hodges-937225ba/)
-- [Portfolio](https://dzamanillo.github.io/)
+
 </div>
 
 <div class="ml">
@@ -51,7 +47,7 @@ Katharine Humble
 
 - [GitHub Profile](https://github.com/katharinechumble)
 - [LinkedIn](https://www.linkedin.com/in/katharine-humble-45906012b/)
-- [Portfolio](https://dzamanillo.github.io/)
+
 </div>
 
 <div class="ml">
@@ -59,7 +55,7 @@ Daniel Zamanillo
 
 - [GitHub Profile](https://github.com/dzamanillo)
 - [LinkedIn](https://www.linkedin.com/in/dzamanillo/)
-- [Portfolio](https://dzamanillo.github.io/)
+
 </div>
 
 </section>
