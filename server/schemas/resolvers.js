@@ -1,7 +1,7 @@
 const { User } = require("../models");
 const { AuthenticationError } = require("apollo-server-express");
 const { signToken } = require("../utils/auth");
-const { getProducts } = require("../utils/ebayapi");
+const { getProducts, getProductByItemId } = require("../utils/ebayapi");
 
 const resolvers = {
 	Query: {
@@ -41,7 +41,25 @@ const resolvers = {
 					}
 				})
 				return products;
-		} 
+		},
+		
+		getEbayItemByItemId: async (parent, {itemId}) => {
+			const eBayData = await getProductByItemId(itemId);
+			console.log('ebayData: ' , eBayData);
+			const productDetails = {
+				itemId: eBayData.itemId,
+				itemName: eBayData.title,
+				price: eBayData.price.value,
+				mainImage: eBayData.image.imageUrl,
+				additionalImages: eBayData.additionalImages ? eBayData.additionalImages.map((image) => image.imageUrl) : [],
+				buyUrl: eBayData.itemWebUrl,
+				sellerUserName: eBayData.seller.username,
+				sellerFeedBackPercentage: eBayData.seller.feedbackPercentage,
+				itemCondition: eBayData.condition,
+				cartValue: false
+			};
+			return productDetails;
+		}
 	},
 
 	Mutation: {

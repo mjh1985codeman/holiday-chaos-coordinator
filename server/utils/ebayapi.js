@@ -48,5 +48,31 @@ module.exports = {
   
     const data = await response.json();
     return data;
-  }
+  },
+
+  getProductByItemId: async (itemId) => {
+    const ebToken = await getEbayToken();
+    if(!ebToken) {
+      console.error("Error Getting the Ebay token.");
+      return "Unable to get EbayToken";
+    };
+
+
+    const response = await fetch(`https://api.ebay.com/buy/browse/v1/item/${itemId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${ebToken.access_token}`, // Use the token you got from the OAuth call
+        'Content-Type': 'application/json'
+      }
+    });
+  
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(`Error fetching item by Id: ${error.errors[0].message}`);
+    }
+  
+    const data = await response.json();
+    return data;
+  },
+
   };
