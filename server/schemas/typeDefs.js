@@ -5,13 +5,10 @@ const { gql } = require("apollo-server-express");
 const typeDefs = gql`
 	type User {
 		_id: ID!
-		firstname: String
-		lastname: String
-		username: String
+		firstName: String
 		email: String
-		productCount: Int
-		savedProducts: [Product]
-		cartProducts: [Product]
+		password: String
+		lists: [List]
 	}
 
 	type Product {
@@ -24,31 +21,27 @@ const typeDefs = gql`
 		sellerUserName: String
 		sellerFeedBackPercentage: String
 		itemCondition: String
-		cartValue: Boolean
 	}
 
 	type List {
 		_id: ID!
 		listName: String!
+		recipients: [Recipient]
 	}
 
-	input SavedProduct {
-		itemId: ID!
-		itemName: String!
-		price: String!
-		imgUrl: String
-		buyUrl: String
-		description: [String]
-		listTag: [String]
-		cartValue: Boolean
+	type Recipient {
+		_id: ID!
+		firstName: String
+		lastName: String
+		products: [Product]
 	}
 
 	type Query {
 		me: User
+		getMyLists(userId: ID!): [List]
 		getEbayProducts(product: String): [Product]
 		getEbayItemByItemId(itemId: String): Product
 	}
-
 
 	type Auth {
 		token: ID!
@@ -57,20 +50,8 @@ const typeDefs = gql`
 
 	type Mutation {
 		login(username: String!, password: String!): Auth
-		addUser(
-			firstname: String!
-			lastname: String!
-			username: String!
-			email: String!
-			password: String!
-		): Auth
-		saveProduct(productData: SavedProduct): User
-		createList(listName: String!): User
-		removeProduct(productId: String!): User
-		removeListItem(itemId: String!): User
-		addToCart(productData: SavedProduct): User
-		removeCartItem(itemId: String!): User
-		cartToTrue(itemId: String!, cartBool: Boolean!): User
+		addUser(firstname: String!, email: String!, password: String!): Auth
+		createList(listName: String!): List
 	}
 `;
 

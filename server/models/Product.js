@@ -13,24 +13,25 @@ const productSchema = new Schema({
 		type: String,
 		required: true,
 	},
-	imgUrl: {
+	mainImage: {
 		type: String,
 	},
+	additionalImages: [
+		{
+			type: String,
+		}
+	],
 	buyUrl: {
 		type: String,
 	},
-	description: [
-		{
-			type: String,
-		},
-	],
-	listTag: [
-		{
-			type: String,
-		},
-	],
-	cartValue: {
-		type: Boolean,
+	sellerUserName: {
+		type: String,
+	},
+	sellerFeedBackPercentage: {
+		type: String,
+	},
+	itemCondition: {
+		type: String
 	},
 });
 

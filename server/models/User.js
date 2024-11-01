@@ -1,23 +1,13 @@
 const { Schema, model } = require("mongoose");
 const bcrypt = require("bcryptjs");
 
-const productSchema = require("./Product");
-const listSchema = require("./Lists");
+const listSchema = require("./List");
 
 const userSchema = new Schema(
 	{
 		firstname: {
 			type: String,
 			required: true,
-		},
-		lastname: {
-			type: String,
-			required: true,
-		},
-		username: {
-			type: String,
-			required: true,
-			unique: true,
 		},
 		email: {
 			type: String,
@@ -29,9 +19,7 @@ const userSchema = new Schema(
 			type: String,
 			required: true,
 		},
-		savedProducts: [productSchema],
-		cartProducts: [productSchema],
-		savedLists: [listSchema],
+		lists: [listSchema],
 	},
 	// set this to use virtual below
 	{
@@ -47,7 +35,6 @@ userSchema.pre("save", async function (next) {
 		const saltRounds = 10;
 		this.password = await bcrypt.hash(this.password, saltRounds);
 	}
-
 	next();
 });
 
@@ -55,10 +42,6 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.isCorrectPassword = async function (password) {
 	return bcrypt.compare(password, this.password);
 };
-
-userSchema.virtual("productCount").get(function () {
-	return this.savedProducts.length;
-});
 
 const User = model("User", userSchema);
 

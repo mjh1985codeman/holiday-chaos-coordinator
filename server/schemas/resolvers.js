@@ -10,9 +10,6 @@ const resolvers = {
 			if (context.user) {
 				const userData = await User.findOne({ _id: context.user._id })
 					.select("-__v -password")
-					.populate("savedProducts")
-					.populate("cartProducts");
-
 				return userData;
 			}
 
@@ -94,100 +91,16 @@ const resolvers = {
 			return { token, user };
 		},
 
-		saveProduct: async (parent, { productData }, context) => {
-			if (context.user) {
-				const updatedUser = await User.findOneAndUpdate(
-					{ _id: context.user._id },
-					{ $push: { savedProducts: productData } },
-					{ new: true }
-				);
-				return updatedUser;
-			}
-			throw new AuthenticationError("Not Logged In");
-		},
-
 		createList: async (parent, { listName }, context) => {
 			if (context.user) {
 				const updatedUser = await User.findOneAndUpdate(
 					{ _id: context.user._id },
-					{ $push: { savedLists: listName } },
+					{ $push: { lists: listName } },
 					{ new: true }
 				);
 				return updatedUser;
 			}
 			throw new AuthenticationError("Not Logged In");
-		},
-
-		removeProduct: async (parent, { itemId }, context) => {
-			if (context.user) {
-				const updateUser = await User.findOneAndUpdate(
-					{ _id: context.user._id },
-					{ $pull: { savedProducts: { itemId: itemId } } },
-					{ new: true }
-				);
-				return updateUser;
-			}
-			throw new AuthenticationError("Not logged in");
-		},
-		//removeListItem resolver.
-		removeListItem: async (parent, args, context) => {
-			if (context.user) {
-				const updatedUser = await User.findOneAndUpdate(
-					{ _id: context.user._id },
-					{ $pull: { savedProducts: { itemId: args.itemId } } },
-					{ new: true }
-				);
-
-				return updatedUser;
-			}
-
-			throw new AuthenticationError("You need to be logged in!");
-		},
-		// addToCart
-		addToCart: async (parent, { productData }, context) => {
-			if (context.user) {
-				const updatedUser = await User.findOneAndUpdate(
-					{ _id: context.user._id },
-					{ $push: { cartProducts: productData } },
-					{ new: true }
-				);
-				return updatedUser;
-			}
-			throw new AuthenticationError("Not Logged In");
-		},
-
-		//removeFromCart resolver.
-		removeCartItem: async (parent, args, context) => {
-			if (context.user) {
-				const updatedUser = await User.findOneAndUpdate(
-					{ _id: context.user._id },
-					{ $pull: { cartProducts: { itemId: args.itemId } } },
-					{ new: true }
-				);
-
-				return updatedUser;
-			}
-
-			throw new AuthenticationError("You need to be logged in!");
-		},
-		cartToTrue: async (parent, args, context) => {
-			if (context.user) {
-				const updatedUser = await User.findOneAndUpdate(
-					{
-						_id: context.user._id,
-						"savedProducts.itemId": args.itemId,
-					},
-					{
-						$set: {
-							"savedProducts.$.cartValue": args.cartBool,
-						},
-					},
-					{ new: true }
-				);
-
-				return updatedUser;
-			}
-			throw new AuthenticationError("You need to be logged in!");
 		},
 	},
 };
