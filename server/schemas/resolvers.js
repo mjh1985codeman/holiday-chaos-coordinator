@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, List } = require("../models");
 const { AuthenticationError } = require("apollo-server-express");
 const { signToken } = require("../utils/auth");
 const { getProducts, getProductByItemId } = require("../utils/ebayapi");
@@ -74,8 +74,8 @@ const resolvers = {
 			return { token, user };
 		},
 
-		login: async (parent, { username, password }) => {
-			const user = await User.findOne({ username });
+		login: async (parent, { email, password }) => {
+			const user = await User.findOne({ email });
 
 			if (!user) {
 				throw new AuthenticationError("Incorrect Credentials");
@@ -91,14 +91,30 @@ const resolvers = {
 			return { token, user };
 		},
 
-		createList: async (parent, { listName }, context) => {
-			if (context.user) {
-				const updatedUser = await User.findOneAndUpdate(
-					{ _id: context.user._id },
-					{ $push: { lists: listName } },
-					{ new: true }
-				);
-				return updatedUser;
+		createList: async (parent, {listName}, context) => {
+			//TESTING WITH MOCKCONTEXT SWITCH 
+			//TODO: switch back to regular context when ready to test w/ frontend. 
+			const mockContext = {
+				user: {
+					_id: '6724f29b0ce05c8ebac90976'
+				}
+			}
+			if (mockContext.user) {
+				//TODO: create the list here first and then get the id and push it to the user.  
+				const newList = await List.create({
+					listName,
+					listUser: mockContext.user._id
+				});
+				if(newList) {
+					await User.findOneAndUpdate(
+						{ _id: mockContext.user._id },
+						{ $push: { lists: newList._id } },
+						{ new: true }
+					);
+					return newList;
+				} else {
+					throw new Error("Unable to create List.");
+				}
 			}
 			throw new AuthenticationError("Not Logged In");
 		},

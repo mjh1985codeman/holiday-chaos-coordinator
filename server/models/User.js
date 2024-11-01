@@ -1,8 +1,6 @@
 const { Schema, model } = require("mongoose");
 const bcrypt = require("bcryptjs");
 
-const listSchema = require("./List");
-
 const userSchema = new Schema(
 	{
 		firstname: {
@@ -19,7 +17,12 @@ const userSchema = new Schema(
 			type: String,
 			required: true,
 		},
-		lists: [listSchema],
+		lists: [
+			{
+			  type: Schema.Types.ObjectId,
+			  ref: "List"
+			}
+		  ],
 	},
 	// set this to use virtual below
 	{

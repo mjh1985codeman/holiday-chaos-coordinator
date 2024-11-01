@@ -1,15 +1,28 @@
-const { Schema } = require("mongoose");
-
-const recipientSchema = require("./Recipient");
+const { Schema, model } = require("mongoose");
 
 const listSchema = new Schema({
   listName: {
     type: String,
     required: true,
   },
-  recipients: [recipientSchema]
+  listUser: {
+    type: Schema.Types.ObjectId,
+    ref: "User"
+  },
+  recipients: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Recipient"
+    }
+    ],
 });
 
-module.exports = listSchema;
+// Create a unique index on listName and listUser so the same user cannot have multiple lists 
+// with the same name.  
+listSchema.index({ listName: 1, listUser: 1 }, { unique: true });
 
-//Friends, [Billy, Joe, Gary]
+const List = model("List", listSchema);
+
+module.exports = List;
+
+//Friends, <userIDthing>, [Billy, Joe, Gary]

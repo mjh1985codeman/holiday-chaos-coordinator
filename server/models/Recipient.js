@@ -1,12 +1,18 @@
-const { Schema } = require("mongoose");
-const productSchema = require("./Product");
+const { Schema, model } = require("mongoose");
 
 const recipientSchema = new Schema({
     firstName: String,
     lastName: String,
-    products: [productSchema]
+    products: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Product"
+        }
+        ],
 });
 
-module.exports = recipientSchema;
+const Recipient = model("Recipient", recipientSchema);
+
+module.exports = Recipient;
 
 //Gary, Smith, Friends, [Lego Batman, Lamp]

@@ -26,6 +26,7 @@ const typeDefs = gql`
 	type List {
 		_id: ID!
 		listName: String!
+		listUser: ID!
 		recipients: [Recipient]
 	}
 
@@ -49,9 +50,10 @@ const typeDefs = gql`
 	}
 
 	type Mutation {
-		login(username: String!, password: String!): Auth
+		login(email: String!, password: String!): Auth
 		addUser(firstname: String!, email: String!, password: String!): Auth
 		createList(listName: String!): List
+		createRecipient(firstName: String!, lastName: String!): Recipient
 	}
 `;
 
