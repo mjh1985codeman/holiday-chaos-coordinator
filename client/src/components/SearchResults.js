@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import ProductCard from "./ProductCard";
+import React, { useState, useEffect } from "react";
 import Auth from "../utils/auth";
-
+import { useQuery, useLazyQuery } from "@apollo/client";
+import { GET_EBAY_PRODUCTS } from "../utils/queries";
 
 // Material UI
 import Grid from "@mui/material/Grid";
+import Item from "@mui/material/ListItem";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
@@ -19,30 +20,26 @@ const SearchResults = () => {
   const [searchedItems, setSearchedItems] = useState([]);
   // hold search field data
   const [searchInput, setSearchInput] = useState("");
-  // handle search errors
-  const [searchError, setSearchError] = useState(false);
   // hold clicked state
   const [clicked, setClicked] = useState(false);
 
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-    setSearchError(false);
+  const [getProducts, { data, loading, error }] = useLazyQuery(GET_EBAY_PRODUCTS);
 
-    try {
-      //const response = await productSearch(searchInput);
-
-      if (response.length < 0) {
-        throw new Error("We missed the mark!");
-      }
-
-      setSearchedItems(response);
-
-      setSearchInput("");
-    } catch (err) {
-      setSearchError(true);
-      setSearchInput("");
-      console.log(err);
+  // Update searched items when data changes
+  useEffect(() => {
+    if (data && data.getEbayProducts) {
+      console.log('look at this damn data: ' , data);
+      setSearchedItems(data.getEbayProducts);
     }
+  }, [data]);
+
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    setClicked(true);
+
+    if (searchInput.trim() === "") return;
+
+    getProducts({ variables: { product: searchInput } });
   };
 
   return (
@@ -89,26 +86,15 @@ const SearchResults = () => {
             }}
           />
 
-          {searchInput ? (
-            <Button
-              onClick={() => setClicked(true)}
-              type="submit"
-              variant="contained"
-              size="large"
-              endIcon={<ShoppingCartIcon />}
-            >
-              Shop
-            </Button>
-          ) : (
-            <Button
-              disabled
-              variant="contained"
-              size="large"
-              endIcon={<ShoppingCartIcon />}
-            >
-              Shop
-            </Button>
-          )}
+          <Button
+            type="submit"
+            variant="contained"
+            size="large"
+            endIcon={<ShoppingCartIcon />}
+            disabled={!searchInput}
+          >
+            Shop
+          </Button>
         </form>
       ) : null}
       {Auth.loggedIn() ? (
@@ -120,34 +106,24 @@ const SearchResults = () => {
             gutterBottom
             component="div"
           >
-            {clicked && searchedItems.length <= 0
+            {loading
               ? "Loading..."
+              : clicked && searchedItems.length <= 0
+              ? "No results found."
               : "Search for an item to begin"}
           </Typography>
         </Paper>
       ) : null}
 
-      {searchError ? (
-        "Hmmm... No results"
-      ) : (
-        <Grid container spacing={2} sx={{ justifyContent: "center" }}>
-          {searchedItems.map((item) => {
-            return (
-              <Grid key={item.itemId} item xs={12} sm={6} md={4} lg={3}>
-                <ProductCard
-                  keyValue={item.itemId}
-                  itemName={item.itemName}
-                  buyUrl={item.buyUrl}
-                  imgUrl={item.imgUrl}
-                  price={item.price}
-                  description={item.description}
-                  searchResults={searchedItems}
-                />
-              </Grid>
-            );
-          })}
-        </Grid>
-      )}
+      {error && <Typography color="error">Hmmm... No results</Typography>}
+
+      <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+        {searchedItems.map((item, index) => (
+          <Grid item key={index} xs={2} sm={4} md={4}>
+            <Item>{item.itemName}</Item>
+          </Grid>
+        ))}
+      </Grid>
     </>
   );
 };

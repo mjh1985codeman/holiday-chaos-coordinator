@@ -8,7 +8,6 @@ import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import SearchIcon from "@mui/icons-material/Search";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Paper from "@mui/material/Paper";
 import ReorderIcon from "@mui/icons-material/Reorder";
 import { useNavigate } from 'react-router-dom';
@@ -34,14 +33,6 @@ const NavBar = () => {
 							onClick={() => navigate("/lists")}
 							label="Your Lists"
 							icon={<ReorderIcon />}
-						/>
-					) : null}
-					{/* Cart */}
-					{Auth.loggedIn() ? (
-						<BottomNavigationAction
-							onClick={() => navigate("/cart")}
-							label="Cart"
-							icon={<ShoppingCartIcon />}
 						/>
 					) : null}
 					{/* Sign Up */}

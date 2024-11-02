@@ -8,7 +8,7 @@ import { LOGIN_USER } from "../utils/mutations";
 
 const Login = () => {
   const [userFormData, setUserFormData] = useState({
-    username: "",
+    email: "",
     password: "",
   });
   const [validated] = useState(false);
@@ -37,7 +37,7 @@ const Login = () => {
     }
 
     setUserFormData({
-      username: "",
+      email: "",
       password: "",
     });
   };
@@ -57,13 +57,13 @@ const Login = () => {
             Something went wrong with your login credentials!
           </Alert>
           <Form.Group>
-            <Form.Label htmlFor="username">Username</Form.Label>
+            <Form.Label htmlFor="email">Email</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Your username"
-              name="username"
+              placeholder="Your email"
+              name="email"
               onChange={handleInputChange}
-              value={userFormData.username}
+              value={userFormData.email}
               required
             />
           </Form.Group>
@@ -80,7 +80,7 @@ const Login = () => {
             />
           </Form.Group>
           <Button
-            disabled={!(userFormData.username && userFormData.password)}
+            disabled={!(userFormData.email && userFormData.password)}
             type="submit"
             variant="contained"
           >
