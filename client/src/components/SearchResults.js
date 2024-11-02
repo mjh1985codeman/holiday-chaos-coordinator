@@ -7,13 +7,11 @@ import { GET_EBAY_PRODUCTS } from "../utils/queries";
 import Grid from "@mui/material/Grid";
 import Item from "@mui/material/ListItem";
 import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 // Icons
-import SearchIcon from "@mui/icons-material/Search";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 
 const SearchResults = () => {
   // hold search data
@@ -44,6 +42,7 @@ const SearchResults = () => {
 
   return (
     <>
+    <div className='search-container'>
       {!Auth.loggedIn() ? (
         <Paper color="primary" elevation={3}>
           <Typography
@@ -67,52 +66,28 @@ const SearchResults = () => {
           }}
         >
           <TextField
-            variant="outlined"
             label="Search"
             margin="normal"
-            fullWidth
+            className="search-bar"
             value={searchInput}
             onChange={(e) => {
               setSearchInput(e.target.value);
               setSearchedItems([]);
               setClicked(false);
             }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
           />
 
           <Button
+            className={searchInput? "search-button": "empty-search-button"}
             type="submit"
-            variant="contained"
+            variant="outlined"
             size="large"
-            endIcon={<ShoppingCartIcon />}
+            endIcon={<EmojiEmotionsIcon />}
             disabled={!searchInput}
           >
-            Shop
+            {searchInput ? "Click To Search Ebay!" : "Type Something to get Started! :)"}
           </Button>
         </form>
-      ) : null}
-      {Auth.loggedIn() ? (
-        <Paper color="primary" elevation={3}>
-          <Typography
-            sx={{ padding: "1rem" }}
-            align="center"
-            variant="h3"
-            gutterBottom
-            component="div"
-          >
-            {loading
-              ? "Loading..."
-              : clicked && searchedItems.length <= 0
-              ? "No results found."
-              : "Search for an item to begin"}
-          </Typography>
-        </Paper>
       ) : null}
 
       {error && <Typography color="error">Hmmm... No results</Typography>}
@@ -124,6 +99,7 @@ const SearchResults = () => {
           </Grid>
         ))}
       </Grid>
+      </div>
     </>
   );
 };

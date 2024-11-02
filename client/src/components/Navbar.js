@@ -19,20 +19,24 @@ const NavBar = () => {
 
 	return (
 		<>
-			<Paper elevation={3}>
+			<Paper elevation={3} className="nav-paper">
 				{/* Search */}
-				<BottomNavigation showLabels>
+				<BottomNavigation showLabels className="cust-nav">
 					<BottomNavigationAction
+						icon={<SearchIcon fontSize="large"/>} // Use sx for styling
+						className="cust-nav-text"
 						onClick={() => navigate("/")}
 						label="Search"
-						icon={<SearchIcon />}
+
 					/>
 					{/* Lists */}
 					{Auth.loggedIn() ? (
 						<BottomNavigationAction
+
 							onClick={() => navigate("/lists")}
 							label="Your Lists"
-							icon={<ReorderIcon />}
+							className="cust-nav-text"
+							icon={<ReorderIcon fontSize="large"/>} 
 						/>
 					) : null}
 					{/* Sign Up */}
@@ -40,7 +44,8 @@ const NavBar = () => {
 						<BottomNavigationAction
 							onClick={() => navigate("/signup")}
 							label="Sign Up"
-							icon={<AssignmentIcon />}
+							className="cust-nav-text"
+							icon={<AssignmentIcon fontSize="large"/>} 
 						/>
 					)}
 					{/* Log Out */}
@@ -49,14 +54,16 @@ const NavBar = () => {
 						<BottomNavigationAction
 							onClick={() => Auth.logout()}
 							label="Logout"
-							icon={<LogoutIcon />}
+							className="cust-nav-text"
+							icon={<LogoutIcon fontSize="large"/>} 
 						/>
 					) : (
 						// Log In
 						<BottomNavigationAction
 							onClick={() => navigate("/login")}
 							label="Login"
-							icon={<LoginIcon />}
+							className="cust-nav-text"
+							icon={<LoginIcon fontSize="large"/>} 
 						/>
 					)}
 				</BottomNavigation>

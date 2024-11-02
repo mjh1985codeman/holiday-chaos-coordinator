@@ -10,8 +10,6 @@ const SignUp = () => {
 	// setting up initial form state
 	const [userFormData, setUserFormData] = useState({
 		firstname: "",
-		lastname: "",
-		username: "",
 		email: "",
 		password: "",
 	});
@@ -54,8 +52,6 @@ const SignUp = () => {
 
 		setUserFormData({
 			firstname: "",
-			lastname: "",
-			username: "",
 			email: "",
 			password: "",
 		});
@@ -85,28 +81,6 @@ const SignUp = () => {
 					/>
 				</Form.Group>
 				<Form.Group>
-					<Form.Label htmlFor="lastname">Last Name</Form.Label>
-					<Form.Control
-						type="text"
-						placeholder="Last Name"
-						name="lastname"
-						onChange={handleInputChange}
-						value={userFormData.lastname}
-						required
-					/>
-				</Form.Group>
-				<Form.Group>
-					<Form.Label htmlFor="username">Username</Form.Label>
-					<Form.Control
-						type="text"
-						placeholder="Username"
-						name="username"
-						onChange={handleInputChange}
-						value={userFormData.username}
-						required
-					/>
-				</Form.Group>
-				<Form.Group>
 					<Form.Label htmlFor="email">Email</Form.Label>
 					<Form.Control
 						type="text"
@@ -120,7 +94,7 @@ const SignUp = () => {
 				<Form.Group>
 					<Form.Label htmlFor="password">Password</Form.Label>
 					<Form.Control
-						type="text"
+						type="password"
 						placeholder="Password"
 						name="password"
 						onChange={handleInputChange}
@@ -133,8 +107,6 @@ const SignUp = () => {
 					disabled={
 						!(
 							userFormData.firstname &&
-							userFormData.lastname &&
-							userFormData.username &&
 							userFormData.email &&
 							userFormData.password
 						)
