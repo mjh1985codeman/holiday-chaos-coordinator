@@ -99,10 +99,6 @@ body {
 	background: #d2d9dd;
 }
 
-.login-style select {
-	-webkit-appearance: menulist-button;
-	height: 35px;
-}
 
 .login-style input[type="submit"],
 .login-style input[type="button"] {
@@ -151,7 +147,9 @@ body {
 
 
 .search-container {
-	margin: 10px;
+	display: flex;
+	flex-direction: column;
+	margin: 20px;
 }
 
 .search-button {
@@ -160,5 +158,6 @@ body {
 }
 
 .empty-search-button {
-	color: rgb(0, 0, 0) !important
+	color: rgb(0, 0, 0) !important;
+	background-color: hsl(0, 17%, 46%) !important;
 }

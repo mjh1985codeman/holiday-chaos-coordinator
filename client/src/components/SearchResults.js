@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Auth from "../utils/auth";
-import { useQuery, useLazyQuery } from "@apollo/client";
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import { useLazyQuery } from "@apollo/client";
 import { GET_EBAY_PRODUCTS } from "../utils/queries";
+import ProductCard from "./ProductCard";
 
 // Material UI
-import Grid from "@mui/material/Grid";
-import Item from "@mui/material/ListItem";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -85,20 +86,19 @@ const SearchResults = () => {
             endIcon={<EmojiEmotionsIcon />}
             disabled={!searchInput}
           >
-            {searchInput ? "Click To Search Ebay!" : "Type Something to get Started! :)"}
+            {searchInput ? "Click To Search Ebay!" : "Type Something to get Started!"}
           </Button>
         </form>
       ) : null}
 
       {error && <Typography color="error">Hmmm... No results</Typography>}
-
-      <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+      <Row xs={1} md={2} className="g-4">
         {searchedItems.map((item, index) => (
-          <Grid item key={index} xs={2} sm={4} md={4}>
-            <Item>{item.itemName}</Item>
-          </Grid>
+           <Col key={index}>
+            <ProductCard prodData={item} />
+            </Col>
         ))}
-      </Grid>
+      </Row>
       </div>
     </>
   );
