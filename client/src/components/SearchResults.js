@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Auth from "../utils/auth";
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import { useLazyQuery } from "@apollo/client";
 import { GET_EBAY_PRODUCTS } from "../utils/queries";
 import ProductCard from "./ProductCard";
@@ -19,8 +17,6 @@ const SearchResults = () => {
   const [searchedItems, setSearchedItems] = useState([]);
   // hold search field data
   const [searchInput, setSearchInput] = useState("");
-  // hold clicked state
-  const [clicked, setClicked] = useState(false);
 
   const [getProducts, { data, loading, error }] = useLazyQuery(GET_EBAY_PRODUCTS);
 
@@ -34,7 +30,6 @@ const SearchResults = () => {
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    setClicked(true);
 
     if (searchInput.trim() === "") return;
 
@@ -74,7 +69,6 @@ const SearchResults = () => {
             onChange={(e) => {
               setSearchInput(e.target.value);
               setSearchedItems([]);
-              setClicked(false);
             }}
           />
 
@@ -92,13 +86,12 @@ const SearchResults = () => {
       ) : null}
 
       {error && <Typography color="error">Hmmm... No results</Typography>}
-      <Row xs={1} md={2} className="g-4">
-        {searchedItems.map((item, index) => (
-           <Col key={index}>
-            <ProductCard prodData={item} />
-            </Col>
+      <div className="card-div">
+      {searchedItems.map((item, index) => (
+            <ProductCard key={index} prodData={item} />
         ))}
-      </Row>
+      </div>
+
       </div>
     </>
   );

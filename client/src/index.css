@@ -1,6 +1,7 @@
 :root {
-	--custom-blue: hsl(199, 79%, 77%);
+	--custom-green: hsl(131, 35%, 18%);
 	--truck-color: hsl(10, 47%, 63%);
+	--card-bg-color: hsla(10, 47%, 63%, 0.637);
 }
 
 
@@ -147,17 +148,74 @@ body {
 
 
 .search-container {
-	display: flex;
-	flex-direction: column;
 	margin: 20px;
 }
 
 .search-button {
-	background-color: var(--custom-blue) !important;
-	color: rgb(104, 104, 104) !important;
+	background-color: var(--custom-green) !important;
+	color: rgb(216, 216, 216) !important;
 }
 
 .empty-search-button {
 	color: rgb(0, 0, 0) !important;
 	background-color: hsl(0, 17%, 46%) !important;
+}
+
+.card-div {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	/* or use auto-fit and minmax for responsiveness */
+	gap: 15px;
+	width: 80%;
+	/* Adjust this width to control how much space it takes up */
+	max-width: 1200px;
+	/* Limits the maximum width so it doesn’t expand too far */
+	margin: 0 auto;
+	/* Centers the grid horizontally */
+	justify-content: center;
+	/* Centers items within the grid */
+}
+
+/* 4 columns for large screens */
+@media (min-width: 1200px) {
+	.card-div {
+		grid-template-columns: repeat(4, 1fr);
+		gap: 25px;
+	}
+}
+
+/* 3 columns for medium-large screens */
+@media (min-width: 992px) and (max-width: 1199px) {
+	.card-div {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+/* 2 columns for medium screens */
+@media (min-width: 768px) and (max-width: 991px) {
+	.card-div {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+/* 1 column for small screens */
+@media (max-width: 767px) {
+	.card-div {
+		grid-template-columns: 1fr;
+		width: 50%;
+	}
+}
+
+.prod-card-stylings {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 4px;
+}
+
+.prod-card-container {
+	border: black solid 2px;
+	border-radius: 5px;
+	padding: 2px;
+	background-color: var(--card-bg-color);
 }
