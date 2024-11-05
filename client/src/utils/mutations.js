@@ -39,13 +39,14 @@ addUser(firstname: $firstname, email: $email, password: $password) {
 `;
 
 export const CREATE_LIST = gql`
-	mutation createList($listName: listName) {
-		createList(listName: $listName) {
-			_id
-			username
-			savedLists {
-				listName
-			}
-		}
-	}
+mutation Mutation($listName: String!) {
+  createList(listName: $listName) {
+    _id
+    listName
+    listUser
+    recipients {
+      _id
+    }
+  }
+}
 `;

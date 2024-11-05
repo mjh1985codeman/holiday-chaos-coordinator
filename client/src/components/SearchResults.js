@@ -4,13 +4,11 @@ import { useLazyQuery } from "@apollo/client";
 import { GET_EBAY_PRODUCTS } from "../utils/queries";
 import { CircularProgress } from '@mui/material';
 import ProductCard from "./ProductCard";
-
-// Material UI
+import CreateList from './CreateList';
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
-// Icons
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 
 const SearchResults = () => {
@@ -21,6 +19,10 @@ const SearchResults = () => {
 
   const [getProducts, { data, loading, error }] = useLazyQuery(GET_EBAY_PRODUCTS);
 
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentProduct, setCurrentProduct] = useState(null);
+  
   // Update searched items when data changes
   useEffect(() => {
     if (data && data.getEbayProducts) {
@@ -36,64 +38,84 @@ const SearchResults = () => {
     getProducts({ variables: { product: searchInput } });
   };
 
+  const handleListCreated = (newList) => {
+    // Handle the new list creation logic here
+    console.log('hey its the new list: ', newList);
+    setIsModalOpen(false); // Close the modal after creating a list
+  };
+
+  const openModal = (product, shouldOpen) => {
+    setCurrentProduct(product);
+    setIsModalOpen(shouldOpen);
+  };
+
   return (
     <>
-    <div className='search-container'>
-      {!Auth.loggedIn() ? (
-        <Paper color="primary" elevation={3}>
-          <Typography
-            sx={{ padding: "1rem" }}
-            align="center"
-            variant="h3"
-            gutterBottom
-            component="div"
-          >
-            Log In or Sign Up to Begin!!!
-          </Typography>
-        </Paper>
-      ) : null}
-      {Auth.loggedIn() ? (
-        <form
-          onSubmit={handleFormSubmit}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            marginBottom: "8px",
-          }}
-        >
-          <TextField
-            label="Search"
-            margin="normal"
-            className="search-bar"
-            value={searchInput}
-            onChange={(e) => {
-              setSearchInput(e.target.value);
-              setSearchedItems([]);
+          {/* CreateList Modal */}
+          <CreateList
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onListCreated={handleListCreated}
+      />
+      <div className='search-container'>
+        {!Auth.loggedIn() ? (
+          <Paper color="primary" elevation={3}>
+            <Typography
+              sx={{ padding: "1rem" }}
+              align="center"
+              variant="h3"
+              gutterBottom
+              component="div"
+            >
+              Log In or Sign Up to Begin!!!
+            </Typography>
+          </Paper>
+        ) : null}
+        
+        {Auth.loggedIn() ? (
+          <form
+            onSubmit={handleFormSubmit}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginBottom: "8px",
             }}
-          />
-
-          <Button
-            className={searchInput? "search-button": "empty-search-button"}
-            type="submit"
-            variant="outlined"
-            size="large"
-            endIcon={<EmojiEmotionsIcon />}
-            disabled={!searchInput}
           >
-            {searchInput ? "Click To Search Ebay!" : "Type Something to get Started!"}
-            {loading ? <CircularProgress color="inherit" /> : ""}
-          </Button>
+            <TextField
+              label="Search"
+              margin="normal"
+              className="search-bar"
+              value={searchInput}
+              onChange={(e) => {
+                setSearchInput(e.target.value);
+                setSearchedItems([]);
+              }}
+            />
 
-        </form>
-      ) : null}
+            <Button
+              className={searchInput? "search-button": "empty-search-button"}
+              type="submit"
+              variant="outlined"
+              size="large"
+              endIcon={<EmojiEmotionsIcon />}
+              disabled={!searchInput}
+            >
+              {searchInput ? "Click To Search Ebay!" : "Type Something to get Started!"}
+              {loading ? <CircularProgress color="inherit" /> : ""}
+            </Button>
+          </form>
+        ) : null}
 
-      {error && <Typography color="error">Hmmm... No results</Typography>}
-      <div className="card-div">
-      {searchedItems.map((item, index) => (
-            <ProductCard key={index} prodData={item} />
-        ))}
-      </div>
-
+        {error && <Typography color="error">Hmmm... No results</Typography>}
+        <div className="card-div">
+          {searchedItems.map((item, index) => (
+            <ProductCard 
+              key={index} 
+              prodData={item} 
+              openModal={openModal} // Pass the openModal function
+            />
+          ))}
+        </div>
       </div>
     </>
   );

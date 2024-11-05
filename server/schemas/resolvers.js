@@ -85,22 +85,15 @@ const resolvers = {
 		},
 
 		createList: async (parent, {listName}, context) => {
-			//TESTING WITH MOCKCONTEXT SWITCH 
-			//TODO: switch back to regular context when ready to test w/ frontend. 
-			const mockContext = {
-				user: {
-					_id: '6724f29b0ce05c8ebac90976'
-				}
-			}
-			if (mockContext.user) {
+			if (context) {
 				//TODO: create the list here first and then get the id and push it to the user.  
 				const newList = await List.create({
 					listName,
-					listUser: mockContext.user._id
+					listUser: context.user._id
 				});
 				if(newList) {
 					await User.findOneAndUpdate(
-						{ _id: mockContext.user._id },
+						{ _id: context.user._id },
 						{ $push: { lists: newList._id } },
 						{ new: true }
 					);
