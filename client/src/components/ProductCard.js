@@ -1,6 +1,4 @@
 import Card from 'react-bootstrap/Card';
-import {useState, useEffect} from 'react';
-
 
 export default function ProductCard({prodData}) {
 
@@ -22,9 +20,9 @@ export default function ProductCard({prodData}) {
 </Card>
 <div className="prod-card-stylings">
 <a href={prodData.buyUrl} target="_blank" rel="noopener noreferrer">
-<button>Buy Now On Ebay!</button>
+<button className='prod-button'>Buy Now On Ebay!</button>
 </a>
-<button>Add To List</button>
+<button className='prod-button'>Add To List</button>
 </div>
 </div>
 </>

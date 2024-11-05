@@ -1,7 +1,8 @@
 :root {
-	--custom-green: hsl(131, 35%, 18%);
+	--custom-green: hsl(131, 85%, 24%);
 	--truck-color: hsl(10, 47%, 63%);
 	--card-bg-color: hsla(10, 47%, 63%, 0.637);
+	--cursive-font: 'Playwrite AU TAS';
 }
 
 
@@ -218,4 +219,14 @@ body {
 	border-radius: 5px;
 	padding: 2px;
 	background-color: var(--card-bg-color);
+	box-shadow: rgba(7, 75, 16, 0.582) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(41, 12, 12, 0.384) 0px -3px 5px;
+}
+
+.prod-button {
+	border-radius: 5px;
+	margin: 2px;
+	font-family: var(--cursive-font);
+	padding: 4px;
+	background-color: rgba(107, 212, 121, 0.568);
+
 }

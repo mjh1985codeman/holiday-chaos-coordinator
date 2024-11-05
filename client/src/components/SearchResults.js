@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Auth from "../utils/auth";
 import { useLazyQuery } from "@apollo/client";
 import { GET_EBAY_PRODUCTS } from "../utils/queries";
+import { CircularProgress } from '@mui/material';
 import ProductCard from "./ProductCard";
 
 // Material UI
@@ -23,7 +24,6 @@ const SearchResults = () => {
   // Update searched items when data changes
   useEffect(() => {
     if (data && data.getEbayProducts) {
-      console.log('look at this damn data: ' , data);
       setSearchedItems(data.getEbayProducts);
     }
   }, [data]);
@@ -81,7 +81,9 @@ const SearchResults = () => {
             disabled={!searchInput}
           >
             {searchInput ? "Click To Search Ebay!" : "Type Something to get Started!"}
+            {loading ? <CircularProgress color="inherit" /> : ""}
           </Button>
+
         </form>
       ) : null}
 
