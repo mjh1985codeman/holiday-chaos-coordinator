@@ -43,3 +43,20 @@ getEbayProducts(product: $product) {
 }
 }
 `;
+
+export const GET_MY_LISTS = gql`
+query GetMyLists {
+  getMyLists {
+    _id
+    listName
+    recipients {
+      _id
+      firstName
+      lastName
+      products {
+        itemId
+      }
+    }
+  }
+}
+`

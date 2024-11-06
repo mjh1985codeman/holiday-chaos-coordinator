@@ -39,7 +39,7 @@ const typeDefs = gql`
 
 	type Query {
 		me: User
-		getMyLists(userId: ID!): [List]
+		getMyLists: [List]
 		getEbayProducts(product: String): [Product]
 		getEbayItemByItemId(itemId: String): Product
 	}

@@ -9,18 +9,6 @@ mutation ($email: String!, $password: String!) {
     user {
         _id
         firstName
-        lists {
-            _id
-            listName
-            recipients {
-                _id
-                firstName
-                lastName
-                    products {
-                        itemId
-                    }
-                }
-            }
         }
     }
 }

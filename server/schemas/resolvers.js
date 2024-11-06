@@ -16,6 +16,15 @@ const resolvers = {
 			throw new AuthenticationError("You are not logged in");
 		},
 
+		getMyLists: async (parent, args, context) => {
+			if(context.user) {
+				const listData = await List.find({listUser: context.user._id});
+				return listData;
+			} else {
+				throw Error("You Must Be Logged In to get your lists!!!")
+			}
+		},
+
 		getEbayProducts: async (parent, args) => {
 				const eBayData = await getProducts(args);
 				const {itemSummaries} = eBayData;

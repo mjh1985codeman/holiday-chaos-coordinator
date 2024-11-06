@@ -4,7 +4,7 @@ import { useLazyQuery } from "@apollo/client";
 import { GET_EBAY_PRODUCTS } from "../utils/queries";
 import { CircularProgress } from '@mui/material';
 import ProductCard from "./ProductCard";
-import CreateList from './CreateList';
+import AddToListModal from "./AddToListModal";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -38,9 +38,7 @@ const SearchResults = () => {
     getProducts({ variables: { product: searchInput } });
   };
 
-  const handleListCreated = (newList) => {
-    // Handle the new list creation logic here
-    console.log('hey its the new list: ', newList);
+  const handleChooseList = () => {
     setIsModalOpen(false); // Close the modal after creating a list
   };
 
@@ -51,11 +49,12 @@ const SearchResults = () => {
 
   return (
     <>
-          {/* CreateList Modal */}
-          <CreateList
+          {/* AddToList Modal */}
+          <AddToListModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onListCreated={handleListCreated}
+        onListChosen={handleChooseList}
+        productToAdd={currentProduct}
       />
       <div className='search-container'>
         {!Auth.loggedIn() ? (

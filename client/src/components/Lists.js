@@ -1,31 +1,39 @@
 import React, { useState, useEffect } from "react";
-
-import { useQuery, useMutation } from "@apollo/client";
-
-import { GET_ME } from "../utils/queries";
-
-//addToCart Functionality global.
+import { useQuery } from "@apollo/client";
+import { GET_MY_LISTS } from "../utils/queries";
 
 const Lists = () => {
-	const { data, loading } = useQuery(GET_ME);
-	const userData = data?.me || {};
-
+	const { data, loading, error } = useQuery(GET_MY_LISTS);
+	const [userLists, setUserLists] = useState([]);
 
 	useEffect(() => {
-		if (!loading && userData) {
-			console.log('userData here: ' , userData);
+		if (data && data.getMyLists) {
+			setUserLists(data.getMyLists);
 		}
-	}, [userData, loading]);
+	}, [data]);
 
 	if (loading) {
 		return <h2>Loading...</h2>;
 	}
 
+	if (error) {
+		return <p>Error: {error.message}</p>;
+	}
+
 	return (
 		<>
-            <h1>List Componenent Here.</h1>
+			<h2>My Lists</h2>
+			{userLists.map((list) => (
+				<div key={list._id}>
+					<h3>{list.listName}</h3>
+					<button>View List</button>
+					<button>Edit List</button>
+					<button>Delete List</button>
+				</div>
+			))}
 		</>
 	);
 };
 
 export default Lists;
+
