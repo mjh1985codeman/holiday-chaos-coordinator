@@ -35,9 +35,10 @@ export default function AddToListModal({ isOpen, onClose, productToAdd }) {
         e.preventDefault();
         
         if (selectedList) {
-            console.log(`Adding product to list: ${selectedList.name} (ID: ${selectedList.id})`, "product info: " , {productToAdd});
+            console.log(`Adding product to list: ${selectedList.name} (ID: ${selectedList.id})`, "product id: " , productToAdd.itemId);
             // Here you can perform any action with the selected list and product data.
         }
+        onClose();
     };
 
     return (
