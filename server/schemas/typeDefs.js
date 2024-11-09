@@ -53,7 +53,8 @@ const typeDefs = gql`
 		login(email: String!, password: String!): Auth
 		addUser(firstname: String!, email: String!, password: String!): Auth
 		createList(listName: String!): List
-		createRecipient(firstName: String!, lastName: String!): Recipient
+		createRecipient(firstName: String!, lastName: String!, listId: ID!): List
+		addEbayItemToListRecipient(listId: String!, ebayItemId: String!, recipientId: String!): List
 	}
 `;
 

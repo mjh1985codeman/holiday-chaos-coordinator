@@ -1,4 +1,4 @@
-const { User, List } = require("../models");
+const { User, List, Recipient } = require("../models");
 const { AuthenticationError } = require("apollo-server-express");
 const { signToken } = require("../utils/auth");
 const { getProducts, getProductByItemId } = require("../utils/ebayapi");
@@ -113,6 +113,61 @@ const resolvers = {
 			}
 			throw new AuthenticationError("Not Logged In");
 		},
+
+		addEbayItemToListRecipient(parent, {listId, ebayItemId, recipientId}, context) {
+			if(!context.user) {
+				throw new AuthenticationError("You must be logged in to complete this action.");
+			}
+
+			const listBelongsToUser = List.findOne({
+				listUser: context.user._id,
+				_id: listId
+			});
+
+			if(!listBelongsToUser) {
+				throw new AuthenticationError("You do not own this list!");
+			}
+			const updatedList = List.findOneAndUpdate({
+				//TODO part.
+			})
+		}, 
+
+		createRecipient: async (parent, {firstName, lastName, listId}, context) => {
+			if(!context.user) {
+				throw new AuthenticationError("You must be logged in to complete this action.")
+			};
+
+			const listBelongsToUser = await List.findOne({
+				listUser: context.user._id,
+				_id: listId
+			});
+
+			if(!listBelongsToUser) {
+
+				throw new AuthenticationError("You do not own this list!");
+
+			} else {
+				const newRecipient = await Recipient.create({
+					firstName,
+					lastName
+				});
+
+				if(!newRecipient) {
+					throw new Error("Error creating Recipient.");
+				};
+
+				const updatedList = await List.findByIdAndUpdate(
+					{_id: listId},
+					{$push: {recipients: newRecipient._id}},
+					{new: true}	
+				);
+				if(updatedList) {
+					return updatedList;
+				} else {
+					throw new Error("Unable to add new recipient to list.");
+				}
+			}
+		}
 	},
 };
 
