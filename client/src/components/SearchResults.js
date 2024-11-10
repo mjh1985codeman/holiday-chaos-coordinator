@@ -22,6 +22,7 @@ const SearchResults = () => {
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
+  const [giftRoute, setGiftRoute] = useState(null);
   
   // Update searched items when data changes
   useEffect(() => {
@@ -47,14 +48,19 @@ const SearchResults = () => {
     setIsModalOpen(shouldOpen);
   };
 
+  const getGiftRoute = (gr) => {
+    setGiftRoute(gr);
+  }
+
   return (
     <>
           {/* AddToList Modal */}
-          <AddToListModal
+        <AddToListModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onListChosen={handleChooseList}
         productToAdd={currentProduct}
+        modalGiftRoute={giftRoute}
       />
       <div className='search-container'>
         {!Auth.loggedIn() ? (
@@ -112,6 +118,7 @@ const SearchResults = () => {
               key={index} 
               prodData={item} 
               openModal={openModal} // Pass the openModal function
+              giftRouteAction={getGiftRoute}
             />
           ))}
         </div>

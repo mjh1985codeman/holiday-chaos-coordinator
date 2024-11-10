@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from "@apollo/client";
 import { GET_MY_LISTS } from "../utils/queries";
 
-export default function AddToListModal({ isOpen, onClose, productToAdd}) {
+export default function AddToListModal({ isOpen, onClose, productToAdd, modalGiftRoute}) {
     const { data, loading, error } = useQuery(GET_MY_LISTS);
     const [userLists, setUserLists] = useState([]);
     const [selectedList, setSelectedList] = useState(null); // State to hold selected list details
@@ -10,11 +10,10 @@ export default function AddToListModal({ isOpen, onClose, productToAdd}) {
     useEffect(() => {
         if (data && data.getMyLists) {
             setUserLists(data.getMyLists);
-            //console.log('giftRoute: ' , giftRoute);
         }
     }, [data]);
 
-
+    console.log('modalGiftRoute: ', modalGiftRoute);
 
     if (loading) {
         return <h2>Loading...</h2>;

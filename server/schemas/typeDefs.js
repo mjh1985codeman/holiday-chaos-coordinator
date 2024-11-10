@@ -13,7 +13,7 @@ const typeDefs = gql`
 
 	type Product {
 		_id: ID!
-		ebayItemId: String!
+		itemId: String!
 		itemName: String!
 		price: String!
 		mainImage: String

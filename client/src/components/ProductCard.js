@@ -1,7 +1,7 @@
 
 import { Card } from 'react-bootstrap';
 
-export default function ProductCard({ prodData, openModal }) {
+export default function ProductCard({ prodData, openModal, giftRouteAction}) {
 
 
     return (
@@ -20,8 +20,8 @@ export default function ProductCard({ prodData, openModal }) {
                     <button className='prod-button'>Buy Now On Ebay!</button>
                 </a>
                 {/* Use the passed function to open the modal */}
-                <button className='prod-button' onClick={() => openModal(prodData, true)}>Add To List</button>
-                <button className='prod-button' onClick={() => openModal(prodData, true)}>Add To Recipient</button>
+                <button className='prod-button' onClick={() => {openModal(prodData, true); giftRouteAction("list")}}>Add To List</button>
+                <button className='prod-button' onClick={() => {openModal(prodData, true); giftRouteAction("recipient")}}>Add To Recipient</button>
             </div>
         </div>
     );
