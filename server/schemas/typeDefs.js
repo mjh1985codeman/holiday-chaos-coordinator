@@ -12,7 +12,8 @@ const typeDefs = gql`
 	}
 
 	type Product {
-		itemId: ID!
+		_id: ID!
+		ebayItemId: String!
 		itemName: String!
 		price: String!
 		mainImage: String
@@ -54,7 +55,9 @@ const typeDefs = gql`
 		addUser(firstname: String!, email: String!, password: String!): Auth
 		createList(listName: String!): List
 		createRecipient(firstName: String!, lastName: String!, listId: ID!): List
-		addEbayItemToListRecipient(listId: String!, ebayItemId: String!, recipientId: String!): List
+		listAddToAllRecs(listId: ID!, ebayItemId: String!): List
+		listAddToOneRec(listId: ID!, ebayItemId: String!, recId: ID!): List
+		addItemToRec(recId: ID!, ebayItemId: String!): Recipient
 	}
 `;
 

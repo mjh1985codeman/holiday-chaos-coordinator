@@ -1,7 +1,7 @@
-import {useEffect} from 'react';
+
 import { Card } from 'react-bootstrap';
 
-export default function ProductCard({ prodData, openModal  }) {
+export default function ProductCard({ prodData, openModal }) {
 
 
     return (
@@ -21,6 +21,7 @@ export default function ProductCard({ prodData, openModal  }) {
                 </a>
                 {/* Use the passed function to open the modal */}
                 <button className='prod-button' onClick={() => openModal(prodData, true)}>Add To List</button>
+                <button className='prod-button' onClick={() => openModal(prodData, true)}>Add To Recipient</button>
             </div>
         </div>
     );

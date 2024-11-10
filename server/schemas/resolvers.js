@@ -114,7 +114,7 @@ const resolvers = {
 			throw new AuthenticationError("Not Logged In");
 		},
 
-		addEbayItemToListRecipient(parent, {listId, ebayItemId, recipientId}, context) {
+		listAddToOneRec(parent, {listId, ebayItemId, recId}, context) {
 			if(!context.user) {
 				throw new AuthenticationError("You must be logged in to complete this action.");
 			}
