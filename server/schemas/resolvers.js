@@ -25,6 +25,33 @@ const resolvers = {
 			}
 		},
 
+		getMyRecipients: async (parent, args, context) => {
+			if(context.user) {
+				const userLists = await List.find({ listUser: context.user._id });
+				const recipientIds = userLists.flatMap(list => list.recipients);
+				const recipientData = await Recipient.find({ _id: { $in: recipientIds } }).populate("products");
+
+
+				// const recArray = [];
+				// if(recipientData) {
+				// 	recipientData.forEach(listObj => {
+				// 		listObj.recipients.forEach(rec => {
+				// 			console.log('rec: ' , rec);
+				// 			recArray.push({
+				// 				recId: rec._id,
+				// 				firstName: rec.firstName,
+				// 				lastName: rec.lastName
+				// 			})
+				// 		});
+				// 	})
+				// }
+				// console.log('recArray: ' , recArray);
+				return recipientData;
+			} else {
+				throw Error("You Must Be Logged In to get your lists!!!")
+			}
+		},
+
 		getEbayProducts: async (parent, args) => {
 				const eBayData = await getProducts(args);
 				const {itemSummaries} = eBayData;

@@ -5,8 +5,14 @@ const recipientSchema = new Schema({
     lastName: String,
     products: [
         {
-            type: Schema.Types.ObjectId,
-            ref: "Product"
+            itemId: String,
+            itemName: String,
+            price: String,
+            mainImage: String,
+            buyUrl: String,
+            sellerUsername: String,
+            sellerFeedBackPercentage: String,
+            itemCondition: String
         }
         ],
 });

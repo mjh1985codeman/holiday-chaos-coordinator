@@ -12,10 +12,9 @@ const typeDefs = gql`
 	}
 
 	type Product {
-		_id: ID!
-		itemId: String!
-		itemName: String!
-		price: String!
+		itemId: String
+		itemName: String
+		price: String
 		mainImage: String
 		additionalImages: [String]
 		buyUrl: String
@@ -43,7 +42,7 @@ const typeDefs = gql`
 		getMyLists: [List]
 		getEbayProducts(product: String): [Product]
 		getEbayItemByItemId(itemId: String): Product
-	}
+		getMyRecipients: [Recipient]	}
 
 	type Auth {
 		token: ID!

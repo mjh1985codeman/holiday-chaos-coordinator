@@ -59,4 +59,24 @@ query GetMyLists {
     }
   }
 }
-`
+`;
+
+export const GET_MY_RECIPIENTS = gql`
+query GetMyRecipients {
+  getMyRecipients {
+      _id
+      firstName
+      lastName
+    products {
+      itemId
+      itemName
+      price
+      mainImage
+      buyUrl
+      itemCondition
+      sellerUserName
+      sellerFeedBackPercentage
+    }
+  }
+}
+`;
