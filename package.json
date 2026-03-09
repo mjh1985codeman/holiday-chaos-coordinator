@@ -1,7 +1,7 @@
 {
-	"name": "mern-shopping",
+	"name": "holiday-chaos-coordinator-server",
 	"version": "1.0.0",
-	"description": "",
+	"description": "Server for the Holiday Chaos Coordinator",
 	"main": "server/server.js",
 	"scripts": {
 		"start": "node server/server.js",
@@ -17,8 +17,6 @@
 		"concurrently": "^9.0.1"
 	},
 	"dependencies": {
-		"bootstrap": "^5.3.3",
-		"dotenv": "^16.4.5",
-		"react-bootstrap": "^2.10.5"
+		"dotenv": "^16.4.5"
 	}
 }

@@ -3,198 +3,261 @@ const { AuthenticationError } = require("apollo-server-express");
 const { signToken } = require("../utils/auth");
 const { getProducts, getProductByItemId } = require("../utils/ebayapi");
 
+function requireAuth(context) {
+	if (!context.user) {
+		throw new AuthenticationError("You must be logged in.");
+	}
+}
+
+async function fetchEbayProduct(ebayItemId) {
+	const itemData = await getProductByItemId(ebayItemId);
+	if (!itemData) {
+		throw new Error("Unable to fetch product from eBay.");
+	}
+	return {
+		itemId: itemData.itemId,
+		itemName: itemData.title,
+		price: itemData.price.value,
+		mainImage: itemData.image.imageUrl,
+		buyUrl: itemData.itemWebUrl,
+		sellerUsername: itemData.seller.username,
+		sellerFeedBackPercentage: itemData.seller.feedbackPercentage,
+		itemCondition: itemData.condition,
+	};
+}
+
 const resolvers = {
 	Query: {
-		// pull specific user
 		me: async (parent, args, context) => {
-			if (context.user) {
-				const userData = await User.findOne({ _id: context.user._id })
-					.select("-__v -password")
-				return userData;
-			}
-
-			throw new AuthenticationError("You are not logged in");
+			requireAuth(context);
+			const userData = await User.findOne({ _id: context.user._id })
+				.select("-__v -password")
+				.populate({
+					path: "lists",
+					populate: { path: "recipients" }
+				});
+			return userData;
 		},
 
 		getMyLists: async (parent, args, context) => {
-			if(context.user) {
-				const listData = await List.find({listUser: context.user._id});
-				return listData;
-			} else {
-				throw Error("You Must Be Logged In to get your lists!!!")
+			requireAuth(context);
+			return List.find({ listUser: context.user._id })
+				.populate("recipients");
+		},
+
+		getListById: async (parent, { listId }, context) => {
+			requireAuth(context);
+			const list = await List.findOne({ _id: listId, listUser: context.user._id })
+				.populate("recipients");
+			if (!list) {
+				throw new Error("List not found.");
 			}
+			return list;
+		},
+
+		getRecipientById: async (parent, { recId }, context) => {
+			requireAuth(context);
+			const recipient = await Recipient.findById(recId);
+			if (!recipient) {
+				throw new Error("Recipient not found.");
+			}
+			return recipient;
 		},
 
 		getMyRecipients: async (parent, args, context) => {
-			if(context.user) {
-				const userLists = await List.find({ listUser: context.user._id });
-				const recipientIds = userLists.flatMap(list => list.recipients);
-				const recipientData = await Recipient.find({ _id: { $in: recipientIds } }).populate("products");
-
-
-				// const recArray = [];
-				// if(recipientData) {
-				// 	recipientData.forEach(listObj => {
-				// 		listObj.recipients.forEach(rec => {
-				// 			console.log('rec: ' , rec);
-				// 			recArray.push({
-				// 				recId: rec._id,
-				// 				firstName: rec.firstName,
-				// 				lastName: rec.lastName
-				// 			})
-				// 		});
-				// 	})
-				// }
-				// console.log('recArray: ' , recArray);
-				return recipientData;
-			} else {
-				throw Error("You Must Be Logged In to get your lists!!!")
-			}
+			requireAuth(context);
+			const userLists = await List.find({ listUser: context.user._id });
+			const recipientIds = userLists.flatMap(list => list.recipients);
+			return Recipient.find({ _id: { $in: recipientIds } });
 		},
 
 		getEbayProducts: async (parent, args) => {
-				const eBayData = await getProducts(args);
-				const {itemSummaries} = eBayData;
-				const products = [];
-				itemSummaries.forEach(item => {
-					const productDetails = {
-						itemId: item.itemId,
-						itemName: item.title,
-						price: item.price.value,
-						mainImage: item.image.imageUrl,
-						additionalImages: item.additionalImages ? item.additionalImages.map((image) => image.imageUrl) : [],
-						buyUrl: item.itemWebUrl,
-						sellerUserName: item.seller.username,
-						sellerFeedBackPercentage: item.seller.feedbackPercentage,
-						itemCondition: item.condition,
-						cartValue: false
-					};
-					if(productDetails) {
-						products.push(productDetails);
-					}
-				})
-				return products;
+			const eBayData = await getProducts(args);
+			const { itemSummaries } = eBayData;
+			if (!itemSummaries) return [];
+			return itemSummaries.map(item => ({
+				itemId: item.itemId,
+				itemName: item.title,
+				price: item.price.value,
+				mainImage: item.image.imageUrl,
+				additionalImages: item.additionalImages
+					? item.additionalImages.map(img => img.imageUrl)
+					: [],
+				buyUrl: item.itemWebUrl,
+				sellerUserName: item.seller.username,
+				sellerFeedBackPercentage: item.seller.feedbackPercentage,
+				itemCondition: item.condition,
+			}));
 		},
-		
-		getEbayItemByItemId: async (parent, {itemId}) => {
+
+		getEbayItemByItemId: async (parent, { itemId }) => {
 			const eBayData = await getProductByItemId(itemId);
-			console.log('ebayData: ' , eBayData);
-			const productDetails = {
+			return {
 				itemId: eBayData.itemId,
 				itemName: eBayData.title,
 				price: eBayData.price.value,
 				mainImage: eBayData.image.imageUrl,
-				additionalImages: eBayData.additionalImages ? eBayData.additionalImages.map((image) => image.imageUrl) : [],
+				additionalImages: eBayData.additionalImages
+					? eBayData.additionalImages.map(img => img.imageUrl)
+					: [],
 				buyUrl: eBayData.itemWebUrl,
 				sellerUserName: eBayData.seller.username,
 				sellerFeedBackPercentage: eBayData.seller.feedbackPercentage,
 				itemCondition: eBayData.condition,
-				cartValue: false
 			};
-			return productDetails;
-		}
+		},
 	},
 
 	Mutation: {
 		addUser: async (parent, args) => {
 			const user = await User.create(args);
 			const token = signToken(user);
-
 			return { token, user };
 		},
 
 		login: async (parent, { email, password }) => {
 			const user = await User.findOne({ email });
-
 			if (!user) {
 				throw new AuthenticationError("Incorrect Credentials");
 			}
-
 			const correctPw = await user.isCorrectPassword(password);
-
 			if (!correctPw) {
 				throw new AuthenticationError("Incorrect Credentials");
 			}
-
 			const token = signToken(user);
 			return { token, user };
 		},
 
-		createList: async (parent, {listName}, context) => {
-			if (context) {
-				//TODO: create the list here first and then get the id and push it to the user.  
-				const newList = await List.create({
-					listName,
-					listUser: context.user._id
-				});
-				if(newList) {
-					await User.findOneAndUpdate(
-						{ _id: context.user._id },
-						{ $push: { lists: newList._id } },
-						{ new: true }
-					);
-					return newList;
-				} else {
-					throw new Error("Unable to create List.");
-				}
-			}
-			throw new AuthenticationError("Not Logged In");
+		createList: async (parent, { listName }, context) => {
+			requireAuth(context);
+			const newList = await List.create({
+				listName,
+				listUser: context.user._id
+			});
+			await User.findOneAndUpdate(
+				{ _id: context.user._id },
+				{ $push: { lists: newList._id } },
+				{ new: true }
+			);
+			return newList;
 		},
 
-		listAddToOneRec(parent, {listId, ebayItemId, recId}, context) {
-			if(!context.user) {
-				throw new AuthenticationError("You must be logged in to complete this action.");
+		updateList: async (parent, { listId, listName }, context) => {
+			requireAuth(context);
+			const updated = await List.findOneAndUpdate(
+				{ _id: listId, listUser: context.user._id },
+				{ listName },
+				{ new: true }
+			).populate("recipients");
+			if (!updated) {
+				throw new Error("List not found or not authorized.");
 			}
+			return updated;
+		},
 
-			const listBelongsToUser = List.findOne({
-				listUser: context.user._id,
-				_id: listId
-			});
-
-			if(!listBelongsToUser) {
-				throw new AuthenticationError("You do not own this list!");
+		deleteList: async (parent, { listId }, context) => {
+			requireAuth(context);
+			const list = await List.findOne({ _id: listId, listUser: context.user._id });
+			if (!list) {
+				throw new Error("List not found or not authorized.");
 			}
-			const updatedList = List.findOneAndUpdate({
-				//TODO part.
-			})
-		}, 
+			if (list.recipients.length > 0) {
+				await Recipient.deleteMany({ _id: { $in: list.recipients } });
+			}
+			await List.findByIdAndDelete(listId);
+			await User.findOneAndUpdate(
+				{ _id: context.user._id },
+				{ $pull: { lists: listId } }
+			);
+			return list;
+		},
 
-		createRecipient: async (parent, {firstName, lastName, listId}, context) => {
-			if(!context.user) {
-				throw new AuthenticationError("You must be logged in to complete this action.")
-			};
+		createRecipient: async (parent, { firstName, lastName, listId }, context) => {
+			requireAuth(context);
+			const list = await List.findOne({ _id: listId, listUser: context.user._id });
+			if (!list) {
+				throw new Error("List not found or not authorized.");
+			}
+			const newRecipient = await Recipient.create({ firstName, lastName, listId });
+			const updatedList = await List.findByIdAndUpdate(
+				listId,
+				{ $push: { recipients: newRecipient._id } },
+				{ new: true }
+			).populate("recipients");
+			return updatedList;
+		},
 
-			const listBelongsToUser = await List.findOne({
-				listUser: context.user._id,
-				_id: listId
-			});
+		updateRecipient: async (parent, { recId, firstName, lastName }, context) => {
+			requireAuth(context);
+			const updateFields = {};
+			if (firstName !== undefined) updateFields.firstName = firstName;
+			if (lastName !== undefined) updateFields.lastName = lastName;
+			const updated = await Recipient.findByIdAndUpdate(
+				recId,
+				updateFields,
+				{ new: true }
+			);
+			if (!updated) {
+				throw new Error("Recipient not found.");
+			}
+			return updated;
+		},
 
-			if(!listBelongsToUser) {
+		deleteRecipient: async (parent, { recId, listId }, context) => {
+			requireAuth(context);
+			const recipient = await Recipient.findByIdAndDelete(recId);
+			if (!recipient) {
+				throw new Error("Recipient not found.");
+			}
+			await List.findByIdAndUpdate(
+				listId,
+				{ $pull: { recipients: recId } }
+			);
+			return recipient;
+		},
 
-				throw new AuthenticationError("You do not own this list!");
+		addItemToRec: async (parent, { recId, ebayItemId }, context) => {
+			requireAuth(context);
+			const product = await fetchEbayProduct(ebayItemId);
+			const updatedRecipient = await Recipient.findByIdAndUpdate(
+				recId,
+				{ $push: { products: product } },
+				{ new: true }
+			);
+			if (!updatedRecipient) {
+				throw new Error("Recipient not found.");
+			}
+			return updatedRecipient;
+		},
 
-			} else {
-				const newRecipient = await Recipient.create({
-					firstName,
-					lastName
-				});
-
-				if(!newRecipient) {
-					throw new Error("Error creating Recipient.");
-				};
-
-				const updatedList = await List.findByIdAndUpdate(
-					{_id: listId},
-					{$push: {recipients: newRecipient._id}},
-					{new: true}	
+		addItemToAllRecsOnList: async (parent, { listId, ebayItemId }, context) => {
+			requireAuth(context);
+			const list = await List.findOne({ _id: listId, listUser: context.user._id });
+			if (!list) {
+				throw new Error("List not found or not authorized.");
+			}
+			const product = await fetchEbayProduct(ebayItemId);
+			if (list.recipients.length > 0) {
+				await Recipient.updateMany(
+					{ _id: { $in: list.recipients } },
+					{ $push: { products: product } }
 				);
-				if(updatedList) {
-					return updatedList;
-				} else {
-					throw new Error("Unable to add new recipient to list.");
-				}
 			}
-		}
+			return List.findById(listId).populate("recipients");
+		},
+
+		removeItemFromRec: async (parent, { recId, itemId }, context) => {
+			requireAuth(context);
+			const updated = await Recipient.findByIdAndUpdate(
+				recId,
+				{ $pull: { products: { itemId } } },
+				{ new: true }
+			);
+			if (!updated) {
+				throw new Error("Recipient not found.");
+			}
+			return updated;
+		},
 	},
 };
 

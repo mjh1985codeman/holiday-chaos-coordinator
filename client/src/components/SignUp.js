@@ -1,26 +1,22 @@
 import React, { useState } from "react";
 import Button from "@mui/material/Button";
-import { Form, Alert } from "react-bootstrap";
+import TextField from "@mui/material/TextField";
+import Alert from "@mui/material/Alert";
+import Collapse from "@mui/material/Collapse";
 
 import Auth from "../utils/auth";
 import { ADD_USER } from "../utils/mutations";
 import { useMutation } from "@apollo/client";
 
 const SignUp = () => {
-	// setting up initial form state
 	const [userFormData, setUserFormData] = useState({
-		firstname: "",
+		firstName: "",
 		email: "",
 		password: "",
 	});
 
-	//set state for form validation
-	const [validated] = useState(false);
-
-	//set state for alert
 	const [showAlert, setShowAlert] = useState(false);
 
-	// define adding user
 	const [createUser] = useMutation(ADD_USER);
 
 	const handleInputChange = (event) => {
@@ -30,14 +26,6 @@ const SignUp = () => {
 
 	const handleFormSubmit = async (event) => {
 		event.preventDefault();
-
-		// ensuring form has all information input
-		const form = event.currentTarget;
-
-		if (form.checkValidity() === false) {
-			event.preventDefault();
-			event.stopPropagation();
-		}
 
 		try {
 			const { data } = await createUser({
@@ -51,72 +39,73 @@ const SignUp = () => {
 		}
 
 		setUserFormData({
-			firstname: "",
+			firstName: "",
 			email: "",
 			password: "",
 		});
 	};
+
 	return (
 		<div className="login-style">
-			<Form noValidate validated={validated} onSubmit={handleFormSubmit}>
+			<Collapse in={showAlert}>
 				<Alert
-					id="signUp-alert"
-					className="login-style"
-					dismissable
+					severity="error"
 					onClose={() => setShowAlert(false)}
-					show={showAlert}
-					variant="danger"
+					sx={{ mb: 2 }}
 				>
 					There was a problem with signing up! Please try again!
 				</Alert>
-				<Form.Group>
-					<Form.Label htmlFor="firstname">First Name</Form.Label>
-					<Form.Control
-						type="text"
-						placeholder="First Name"
-						name="firstname"
-						onChange={handleInputChange}
-						value={userFormData.firstname}
-						required
-					/>
-				</Form.Group>
-				<Form.Group>
-					<Form.Label htmlFor="email">Email</Form.Label>
-					<Form.Control
-						type="text"
-						placeholder="Email"
-						name="email"
-						onChange={handleInputChange}
-						value={userFormData.email}
-						required
-					/>
-				</Form.Group>
-				<Form.Group>
-					<Form.Label htmlFor="password">Password</Form.Label>
-					<Form.Control
-						type="password"
-						placeholder="Password"
-						name="password"
-						onChange={handleInputChange}
-						value={userFormData.password}
-						required
-					/>
-				</Form.Group>
-
-				<Button
-					disabled={
-						!(
-							userFormData.firstname &&
-							userFormData.email &&
-							userFormData.password
-						)
-					}
-					type="submit"
-					variant="contained"
-				>
-					submit
-				</Button>
-			</Form>
+			</Collapse>
+			<form onSubmit={handleFormSubmit}>
+				<TextField
+					label="First Name"
+					type="text"
+					name="firstName"
+					placeholder="First Name"
+					onChange={handleInputChange}
+					value={userFormData.firstName}
+					required
+					fullWidth
+					margin="normal"
+				/>
+				<TextField
+					label="Email"
+					type="email"
+					name="email"
+					placeholder="Email"
+					onChange={handleInputChange}
+					value={userFormData.email}
+					required
+					fullWidth
+					margin="normal"
+				/>
+				<TextField
+					label="Password"
+					type="password"
+					name="password"
+					placeholder="Password"
+					onChange={handleInputChange}
+					value={userFormData.password}
+					required
+					fullWidth
+					margin="normal"
+				/>
+				<div className="btn-div">
+					<Button
+						disabled={
+							!(
+								userFormData.firstName &&
+								userFormData.email &&
+								userFormData.password
+							)
+						}
+						type="submit"
+						variant="contained"
+					>
+						Submit
+					</Button>
+				</div>
+			</form>
 		</div>
 	);
 };

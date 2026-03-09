@@ -2,13 +2,11 @@
 
 ## About
 
-The holidays are fast approaching and you could use a hand in keeping your shopping list in order. Holiday Chaos Coordinator allows you to search the Target API to search products then save products to various shopping lists. We hope this app fills you with holiday cheer! 🎁
+The holidays are fast approaching and you could use a hand in keeping your shopping list in order. Holiday Chaos Coordinator allows you to search the Ebay API to search products then save products to various shopping lists. We hope this app fills you with holiday cheer! 🎁
 
-<div class="preview">
+## How To Use
 
-<img class="preview-img" src="readme-assets/demo1.gif" alt="demo1">
-
-</div>
+You start off by signing up for an account.  At this time you do not have to incorporate your existing Ebay Credentials in order to use the application.  Signing up gives you the ability to create lists (friends, co-workers, etc.) and individual recipients.  When searching for a gift you can either add that item to a recipient, all recipients or all recipients on a certain list.  
 
 ## Built with
 
@@ -28,34 +26,4 @@ The holidays are fast approaching and you could use a hand in keeping your shopp
 ![Heroku](https://img.shields.io/badge/heroku-%23430098.svg?style=for-the-badge&logo=heroku&logoColor=white)
 
   </div>
-
-
-## Contribution
-
-<section class="flex">
-
-<div class="ml">
-Michael Hodges
-
-- [GitHub Profile](https://github.com/mjh1985codeman)
-- [LinkedIn](https://www.linkedin.com/in/michael-hodges-937225ba/)
-
-</div>
-
-<div class="ml">
-Katharine Humble
-
-- [GitHub Profile](https://github.com/katharinechumble)
-- [LinkedIn](https://www.linkedin.com/in/katharine-humble-45906012b/)
-
-</div>
-
-<div class="ml">
-Daniel Zamanillo
-
-- [GitHub Profile](https://github.com/dzamanillo)
-- [LinkedIn](https://www.linkedin.com/in/dzamanillo/)
-
-</div>
-
 </section>

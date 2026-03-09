@@ -1,5 +1,4 @@
 import React from "react";
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import {
   ApolloClient,
@@ -9,13 +8,14 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 
-// Components
 import Navbar from "./components/Navbar";
+import Snowfall from "./components/Snowfall";
 import SearchResults from "./components/SearchResults";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import Lists from "./components/Lists";
-
+import ListDetail from "./components/ListDetail";
+import RecipientDetail from "./components/RecipientDetail";
 
 const httpLink = createHttpLink({
   uri: "/graphql",
@@ -40,15 +40,16 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <Router>
-        <>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<SearchResults />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/lists" element={<Lists />} />
-          </Routes>
-        </>
+        <Snowfall />
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<SearchResults />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/lists" element={<Lists />} />
+          <Route path="/lists/:listId" element={<ListDetail />} />
+          <Route path="/recipients/:recId" element={<RecipientDetail />} />
+        </Routes>
       </Router>
     </ApolloProvider>
   );

@@ -55,13 +55,15 @@ const SearchResults = () => {
   return (
     <>
           {/* AddToList Modal */}
-        <AddToListModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onListChosen={handleChooseList}
-        productToAdd={currentProduct}
-        modalGiftRoute={giftRoute}
-      />
+          {Auth.loggedIn() ? 
+                  <AddToListModal
+                  isOpen={isModalOpen}
+                  onClose={() => setIsModalOpen(false)}
+                  onListChosen={handleChooseList}
+                  productToAdd={currentProduct}
+                  modalGiftRoute={giftRoute}
+                />
+          : null}
       <div className='search-container'>
         {!Auth.loggedIn() ? (
           <Paper color="primary" elevation={3}>
@@ -110,8 +112,6 @@ const SearchResults = () => {
             </Button>
           </form>
         ) : null}
-
-        {error && <Typography color="error">Hmmm... No results</Typography>}
         <div className="card-div">
           {searchedItems.map((item, index) => (
             <ProductCard 
@@ -122,6 +122,7 @@ const SearchResults = () => {
             />
           ))}
         </div>
+        {error && <Typography color="error">Hmmm... No results</Typography>}
       </div>
     </>
   );

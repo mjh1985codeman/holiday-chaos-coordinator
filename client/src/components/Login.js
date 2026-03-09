@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Button from "@mui/material/Button";
-import { Form, Alert } from "react-bootstrap";
+import TextField from "@mui/material/TextField";
+import Alert from "@mui/material/Alert";
+import Collapse from "@mui/material/Collapse";
 import { useMutation } from "@apollo/client";
 
 import Auth from "../utils/auth";
@@ -11,7 +13,6 @@ const Login = () => {
     email: "",
     password: "",
   });
-  const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
   const [loginUser] = useMutation(LOGIN_USER);
@@ -25,7 +26,6 @@ const Login = () => {
     event.preventDefault();
 
     try {
-      // execute the loginUser mutation and pass in variable data from the form
       const { data } = await loginUser({
         variables: { ...userFormData },
       });
@@ -43,42 +43,40 @@ const Login = () => {
   };
 
   return (
-    <>
-      <div className="login-style">
-        <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
-          <Alert
-            id="login-alert"
-            className="login-style"
-            dismissible
-            onClose={() => setShowAlert(false)}
-            show={showAlert}
-            variant="danger"
-          >
-            Something went wrong with your login credentials!
-          </Alert>
-          <Form.Group>
-            <Form.Label htmlFor="email">Email</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Your email"
-              name="email"
-              onChange={handleInputChange}
-              value={userFormData.email}
-              required
-            />
-          </Form.Group>
-
-          <Form.Group>
-            <Form.Label htmlFor="password">Password</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Your password"
-              name="password"
-              onChange={handleInputChange}
-              value={userFormData.password}
-              required
-            />
-          </Form.Group>
+    <div className="login-style">
+      <Collapse in={showAlert}>
+        <Alert
+          severity="error"
+          onClose={() => setShowAlert(false)}
+          sx={{ mb: 2 }}
+        >
+          Something went wrong with your login credentials!
+        </Alert>
+      </Collapse>
+      <form onSubmit={handleFormSubmit}>
+        <TextField
+          label="Email"
+          type="email"
+          name="email"
+          placeholder="Your email"
+          onChange={handleInputChange}
+          value={userFormData.email}
+          required
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Password"
+          type="password"
+          name="password"
+          placeholder="Your password"
+          onChange={handleInputChange}
+          value={userFormData.password}
+          required
+          fullWidth
+          margin="normal"
+        />
+        <div className="btn-div">
           <Button
             disabled={!(userFormData.email && userFormData.password)}
             type="submit"
@@ -86,9 +84,9 @@ const Login = () => {
           >
             Submit
           </Button>
-        </Form>
-      </div>
-    </>
+        </div>
+      </form>
+    </div>
   );
 };
 

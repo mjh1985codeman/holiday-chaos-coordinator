@@ -1,7 +1,5 @@
-// import the gql tagged template function
 const { gql } = require("apollo-server-express");
 
-// create our typeDefs
 const typeDefs = gql`
 	type User {
 		_id: ID!
@@ -32,6 +30,7 @@ const typeDefs = gql`
 
 	type Recipient {
 		_id: ID!
+		listId: ID
 		firstName: String
 		lastName: String
 		products: [Product]
@@ -40,9 +39,12 @@ const typeDefs = gql`
 	type Query {
 		me: User
 		getMyLists: [List]
+		getListById(listId: ID!): List
+		getRecipientById(recId: ID!): Recipient
 		getEbayProducts(product: String): [Product]
 		getEbayItemByItemId(itemId: String): Product
-		getMyRecipients: [Recipient]	}
+		getMyRecipients: [Recipient]
+	}
 
 	type Auth {
 		token: ID!
@@ -51,14 +53,17 @@ const typeDefs = gql`
 
 	type Mutation {
 		login(email: String!, password: String!): Auth
-		addUser(firstname: String!, email: String!, password: String!): Auth
+		addUser(firstName: String!, email: String!, password: String!): Auth
 		createList(listName: String!): List
+		updateList(listId: ID!, listName: String!): List
+		deleteList(listId: ID!): List
 		createRecipient(firstName: String!, lastName: String!, listId: ID!): List
-		listAddToAllRecs(listId: ID!, ebayItemId: String!): List
-		listAddToOneRec(listId: ID!, ebayItemId: String!, recId: ID!): List
+		updateRecipient(recId: ID!, firstName: String, lastName: String): Recipient
+		deleteRecipient(recId: ID!, listId: ID!): Recipient
 		addItemToRec(recId: ID!, ebayItemId: String!): Recipient
+		addItemToAllRecsOnList(listId: ID!, ebayItemId: String!): List
+		removeItemFromRec(recId: ID!, itemId: String!): Recipient
 	}
 `;
 
-// export the typeDefs
 module.exports = typeDefs;
