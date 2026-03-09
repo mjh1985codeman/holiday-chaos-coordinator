@@ -27,7 +27,13 @@ const startServer = async () => {
     // Apply Apollo GraphQL middleware to the Express app
     server.applyMiddleware({ app });
 
-    // Listen for the DB connection
+    if (process.env.NODE_ENV === "production") {
+        app.use(express.static(path.join(__dirname, "../client/build")));
+        app.get("*", (req, res) => {
+            res.sendFile(path.join(__dirname, "../client/build/index.html"));
+        });
+    }
+
     db.once("open", () => {
         app.listen(PORT, () => {
             console.log(`API server running on port ${PORT}!`);
@@ -36,15 +42,4 @@ const startServer = async () => {
     });
 };
 
-// Serve up static assets for production
-if (process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(__dirname, "../client/build")));
-
-    // Catch-all route to serve index.html for React Router
-    app.get("*", (req, res) => {
-        res.sendFile(path.join(__dirname, "../client/build/index.html"));
-    });
-}
-
-// Start the server
 startServer();
