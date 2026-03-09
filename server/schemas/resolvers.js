@@ -17,12 +17,12 @@ async function fetchEbayProduct(ebayItemId) {
 	return {
 		itemId: itemData.itemId,
 		itemName: itemData.title,
-		price: itemData.price.value,
-		mainImage: itemData.image.imageUrl,
+		price: itemData.price?.value ?? "0.00",
+		mainImage: itemData.image?.imageUrl ?? "",
 		buyUrl: itemData.itemWebUrl,
-		sellerUsername: itemData.seller.username,
-		sellerFeedBackPercentage: itemData.seller.feedbackPercentage,
-		itemCondition: itemData.condition,
+		sellerUsername: itemData.seller?.username ?? "Unknown",
+		sellerFeedBackPercentage: itemData.seller?.feedbackPercentage ?? "0",
+		itemCondition: itemData.condition ?? "Not specified",
 	};
 }
 
@@ -75,19 +75,21 @@ const resolvers = {
 			const eBayData = await getProducts(args);
 			const { itemSummaries } = eBayData;
 			if (!itemSummaries) return [];
-			return itemSummaries.map(item => ({
-				itemId: item.itemId,
-				itemName: item.title,
-				price: item.price.value,
-				mainImage: item.image.imageUrl,
-				additionalImages: item.additionalImages
-					? item.additionalImages.map(img => img.imageUrl)
-					: [],
-				buyUrl: item.itemWebUrl,
-				sellerUserName: item.seller.username,
-				sellerFeedBackPercentage: item.seller.feedbackPercentage,
-				itemCondition: item.condition,
-			}));
+			return itemSummaries
+				.filter(item => item.image?.imageUrl)
+				.map(item => ({
+					itemId: item.itemId,
+					itemName: item.title,
+					price: item.price?.value ?? "0.00",
+					mainImage: item.image.imageUrl,
+					additionalImages: item.additionalImages
+						? item.additionalImages.map(img => img.imageUrl)
+						: [],
+					buyUrl: item.itemWebUrl,
+					sellerUserName: item.seller?.username ?? "Unknown",
+					sellerFeedBackPercentage: item.seller?.feedbackPercentage ?? "0",
+					itemCondition: item.condition ?? "Not specified",
+				}));
 		},
 
 		getEbayItemByItemId: async (parent, { itemId }) => {
@@ -95,15 +97,15 @@ const resolvers = {
 			return {
 				itemId: eBayData.itemId,
 				itemName: eBayData.title,
-				price: eBayData.price.value,
-				mainImage: eBayData.image.imageUrl,
+				price: eBayData.price?.value ?? "0.00",
+				mainImage: eBayData.image?.imageUrl ?? "",
 				additionalImages: eBayData.additionalImages
 					? eBayData.additionalImages.map(img => img.imageUrl)
 					: [],
 				buyUrl: eBayData.itemWebUrl,
-				sellerUserName: eBayData.seller.username,
-				sellerFeedBackPercentage: eBayData.seller.feedbackPercentage,
-				itemCondition: eBayData.condition,
+				sellerUserName: eBayData.seller?.username ?? "Unknown",
+				sellerFeedBackPercentage: eBayData.seller?.feedbackPercentage ?? "0",
+				itemCondition: eBayData.condition ?? "Not specified",
 			};
 		},
 	},
