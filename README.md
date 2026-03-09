@@ -1,5 +1,7 @@
 # Holiday Chaos Coordinator
 
+**Live:** [holiday-chaos-coordinator-production.up.railway.app](https://holiday-chaos-coordinator-production.up.railway.app/)
+
 ## About
 
 The holidays are fast approaching and you could use a hand in keeping your shopping list in order. Holiday Chaos Coordinator allows you to search the Ebay API to search products then save products to various shopping lists. We hope this app fills you with holiday cheer! 🎁
@@ -23,7 +25,7 @@ You start off by signing up for an account.  At this time you do not have to inc
 ![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Mongoose](https://img.shields.io/badge/Mongoose-%39477F.svg?style=for-the-badge&logo=mongodb&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
-![Heroku](https://img.shields.io/badge/heroku-%23430098.svg?style=for-the-badge&logo=heroku&logoColor=white)
+![Railway](https://img.shields.io/badge/Railway-%23000000.svg?style=for-the-badge&logo=railway&logoColor=white)
 
   </div>
 </section>
