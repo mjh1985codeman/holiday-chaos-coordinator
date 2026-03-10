@@ -1,31 +1,93 @@
 # Holiday Chaos Coordinator
 
+A holiday gift shopping organizer built with the MERN stack and GraphQL. Search for products via the eBay Browse API, save them to custom shopping lists, and assign gifts to individual recipients - all in one place.
+
 **Live:** [holiday-chaos-coordinator-production.up.railway.app](https://holiday-chaos-coordinator-production.up.railway.app/)
 
-## About
+## Features
 
-The holidays are fast approaching and you could use a hand in keeping your shopping list in order. Holiday Chaos Coordinator allows you to search the Ebay API to search products then save products to various shopping lists. We hope this app fills you with holiday cheer! 🎁
+- **List management** - Create and organize shopping lists by group (friends, co-workers, family, etc.)
+- **Recipient tracking** - Add recipients to lists and assign products directly to them
+- **eBay product search** - Search for gifts via the eBay Browse API without needing your own eBay credentials
+- **Flexible assignment** - Add a product to a single recipient, all recipients, or all recipients on a specific list
+- **Authentication** - Sign up and log in with JWT-based auth
 
-## How To Use
+## Tech Stack
 
-You start off by signing up for an account.  At this time you do not have to incorporate your existing Ebay Credentials in order to use the application.  Signing up gives you the ability to create lists (friends, co-workers, etc.) and individual recipients.  When searching for a gift you can either add that item to a recipient, all recipients or all recipients on a certain list.  
+| Layer | Technologies |
+|-------|-------------|
+| **Frontend** | React 18, React Router 6, Material UI 6, Apollo Client 3 |
+| **Backend** | Node.js, Express, Apollo Server 3, GraphQL |
+| **Database** | MongoDB with Mongoose |
+| **Auth** | JWT, bcryptjs |
+| **External API** | eBay Browse API (OAuth2) |
+| **Deployment** | Railway |
 
-## Built with
+## Getting Started
 
-<div>
+### Prerequisites
 
-![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
-![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
-![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)
-![MUI](https://img.shields.io/badge/MUI-%230081CB.svg?style=for-the-badge&logo=material-ui&logoColor=white)
-![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
-![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
-![GraphQL](https://img.shields.io/badge/-GraphQL-E10098?style=for-the-badge&logo=graphql&logoColor=white)
-![Apollo-GraphQL](https://img.shields.io/badge/-ApolloGraphQL-311C87?style=for-the-badge&logo=apollo-graphql)
-![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
-![Mongoose](https://img.shields.io/badge/Mongoose-%39477F.svg?style=for-the-badge&logo=mongodb&logoColor=white)
-![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
-![Railway](https://img.shields.io/badge/Railway-%23000000.svg?style=for-the-badge&logo=railway&logoColor=white)
+- Node.js 18+
+- MongoDB instance (local or Atlas)
+- eBay API credentials (Client ID and Client Secret)
 
-  </div>
-</section>
+### Setup
+
+1. Clone the repo and install dependencies:
+
+   ```bash
+   npm run install
+   ```
+
+2. Create `server/.env` from the example file and fill in your values:
+
+   ```
+   MONGODB_URI=your_mongodb_connection_string
+   EBAY_CLIENT_ID=your_ebay_client_id
+   EBAY_CLIENT_SECRET=your_ebay_client_secret
+   JWT_SEC=your_jwt_secret
+   NODE_ENV=development
+   PORT=3001
+   ```
+
+3. Start the dev servers:
+
+   ```bash
+   npm run develop
+   ```
+
+   Client runs on `http://localhost:3000`, API on `http://localhost:3001`.
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run install` | Install server and client dependencies |
+| `npm run develop` | Run client and server concurrently |
+| `npm start` | Run server only (production) |
+| `npm run build` | Build React client for production |
+
+## Project Structure
+
+```
+holiday-chaos-coordinator/
+├── client/
+│   ├── src/
+│   │   ├── components/     # Lists, ProductCard, SearchResults, AddToListModal, etc.
+│   │   ├── utils/          # GraphQL queries, mutations, auth helpers
+│   │   └── App.js          # Routes and Apollo provider
+│   └── package.json
+├── server/
+│   ├── models/             # User, List, Recipient (Mongoose)
+│   ├── schemas/            # GraphQL typeDefs and resolvers
+│   ├── utils/              # Auth middleware, eBay API client
+│   ├── server.js
+│   └── .env.example
+└── package.json
+```
+
+## Data Models
+
+- **User** - firstName, email, password, lists
+- **List** - listName, listUser, recipients
+- **Recipient** - firstName, lastName, listId, products (embedded)
